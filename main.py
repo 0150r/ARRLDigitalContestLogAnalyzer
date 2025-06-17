@@ -53,23 +53,16 @@ def main():
 
     #loop through all the qsos in the log
     for qso in qsos:
-        #validate that we have grid squares for ourselves and the other station
-        grid1 = qso.get('MY_GRIDSQUARE', 'ZZ00')
-        if grid1[:4] == 'ZZ00':
-            print()
-            print(f"Missing MY_GRIDSQUARE from log, skipping....")
-            print()
-            continue
-        grid2 = qso.get('GRIDSQUARE', 'ZZ00')
-        if grid2[:4] == 'ZZ00':
-            print()
-            print(f"Missing GRIDSQUARE from log, skipping....")
-            print()
-            continue
-
         #get the callsign and band
         who = qso.get('CALL', 'ERROR')
         band = qso.get('BAND', 'ERROR')
+
+        #validate that we have grid squares for ourselves and the other station
+        grid1 = qso.get('MY_GRIDSQUARE', 'ZZ00')
+        grid2 = qso.get('GRIDSQUARE', 'ZZ00')
+        if grid2[:4] == 'ZZ00':
+            print(f"Missing GRIDSQARE for {who} on {band}, skipping QSO!")
+            continue
 
         #initialize the band summary pair if this is the first qso on this band
         if band not in band_summary:
@@ -91,15 +84,9 @@ def main():
         #distance info
         total_dist += dist
         if dist > longest_qso['distance']:
-            longest_qso['call'] = who
-            longest_qso['band'] = band
-            longest_qso['distance'] = dist
-            longest_qso['points'] = points
+            longest_qso = {'call': who, 'band': band, 'distance': dist, 'points': points}
         if dist < shortest_qso['distance']:
-            shortest_qso['call'] = who
-            shortest_qso['band'] = band
-            shortest_qso['distance'] = dist
-            shortest_qso['points'] = points
+            shortest_qso = {'call': who, 'band': band, 'distance': dist, 'points': points}
 
         #keep track of number of qsos and total points for each band
         band_summary[band]['contacts'] += 1
@@ -108,6 +95,7 @@ def main():
         #add qso so we can detect future dupes
         unique_qsos.add(qso_pair)
 
+        #display QSO info
         print(f"{who}: {band}, {grid2}, {dist:.0f} km, {points} points")
     
     #calculate average points per qso
