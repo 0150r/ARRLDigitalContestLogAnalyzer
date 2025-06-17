@@ -61,7 +61,7 @@ def main():
         grid1 = qso.get('MY_GRIDSQUARE', 'ZZ00')
         grid2 = qso.get('GRIDSQUARE', 'ZZ00')
         if grid2[:4] == 'ZZ00':
-            print(f"Missing GRIDSQARE for {who} on {band}, skipping QSO!")
+            print(f"Missing GRIDSQUARE for {who} on {band}, skipping QSO!")
             continue
 
         #initialize the band summary pair if this is the first qso on this band
